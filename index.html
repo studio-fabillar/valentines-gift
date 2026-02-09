@@ -15,32 +15,26 @@
         }
 
         body {
-            font-family: 'Playfair Display', serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #1a1a1a;
-            padding: 20px;
-        }
+    margin: 0;
+    background: #000;
+    font-family: 'Playfair Display', serif;
+}
 
         .mobile-version {
             position: relative;
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             background: #E7E0CF;
             overflow: hidden;
         }
 
-        .background-texture {
-            position: absolute;
-            width: 350px;
-            height: 442px;
-            left: -0.12px;
-            top: 0px;
-            background-image: url('images/background.jpg');
-            background-size: cover;
-            background-position: center;
+      .background-texture {
+    position: absolute;
+    inset: 0;
+    background-image: url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+}
         }
 
         .title {
@@ -580,18 +574,7 @@
             margin-top: 20px;
         }
 
-        @media (max-width: 400px) {
-            .mobile-version {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 350 / 442;
-            }
-
-            .background-texture {
-                width: 100%;
-                height: 100%;
-            }
-        }
+        
     </style>
 </head>
 <body>
