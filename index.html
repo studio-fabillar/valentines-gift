@@ -25,13 +25,16 @@
 
 
         .mobile-version {
-            position: relative;
-            width: 350px;
-            height: 595px;
-            background: #E7E0CF;
-            overflow: hidden;
-            transform-origin: center center;
-        }
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 430px;   /* iPhone Pro Max width */
+    max-height: 932px;  /* iPhone Pro Max height */
+    margin: 0 auto;
+    background: #E7E0CF;
+    overflow: hidden;
+}
+
 
         /* Responsive scaling for all screen sizes */
         @media (max-width: 370px), (max-height: 615px) {
