@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Your Eyes Only</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #000;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .mobile-version {
+            position: relative;
+            width: 100vw;
+            height: 100dvh;
+            background: #E7E0CF;
+            overflow: hidden;
+        }
+
+        .background-texture {
+            position: absolute;
+            inset: 0;
+            background-image: url('images/background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .title {
+            position: absolute;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Playfair Display';
+            font-style: normal;
+            font-weight: 400;
+            font-size: clamp(10px, 3vw, 14px);
+            line-height: 16px;
+            color: #A21E1D;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        /* Cassette Tape */
+        .cassette-tape {
+            position: absolute;
+            width: 20%;
+            max-width: 100px;
+            aspect-ratio: 1.58;
+            left: 18%;
+            top: 12%;
+            transform: rotate(90deg);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 5;
+        }
+
+        .cassette-tape:hover {
+            transform: rotate(90deg) translateY(-5px);
+        }
+
+        .cassette-tape img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Envelope */
+        .envelope {
+            position: absolute;
+            width: 45%;
+            max-width: 200px;
+            aspect-ratio: 1.39;
+            left: 28%;
+            top: 14%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 4;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+
+        .envelope img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Vinyl Player */
+        .vinyl-player {
+            position: absolute;
+            width: 42%;
+            max-width: 180px;
+            aspect-ratio: 1.24;
+            left: 6%;
+            top: 28%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 3;
+        }
+
+        .vinyl-player:hover {
+            transform: translateY(-5px);
+        }
+
+        .vinyl-player > img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            z-index: 1;
+        }
+
+        .vinyl-cd {
+            position: absolute;
+            width: 70%;
+            aspect-ratio: 1;
+            left: 8%;
+            top: 3%;
+            z-index: 2;
+        }
+
+        .vinyl-cd img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .vinyl-cd img.spinning {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Photo Booth */
+        .photo-booth {
+            position: absolute;
+            width: 11%;
+            max-width: 50px;
+            aspect-ratio: 0.27;
+            right: 8%;
+            top: 20%;
+            transform: rotate(14.04deg);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 6;
+        }
+
+        .photo-booth:hover {
+            transform: rotate(14.04deg) translateY(-5px);
+        }
+
+        .photo-strip {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            padding: 4% 3%;
+            box-shadow: 0px 1.22067px 4.88269px 1.52584px rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            gap: 4%;
+        }
+
+        .photo-frame {
+            width: 100%;
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            color: #999;
+            font-size: clamp(12px, 4vw, 16px);
+        }
+
+        /* Ticket */
+        .ticket {
+            position: absolute;
+            width: 19%;
+            max-width: 80px;
+            aspect-ratio: 1.91;
+            left: 48%;
+            top: 33%;
+            z-index: 2;
+        }
+
+        .ticket img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fffef7;
+            padding: clamp(20px, 5vw, 40px);
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #5a4a3a;
+            font-size: clamp(20px, 5vw, 28px);
+            font-family: 'Playfair Display', serif;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(14px, 3vw, 16px);
+            resize: vertical;
+            background: #fffef7;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(14px, 3vw, 16px);
+        }
+
+        button {
+            background: #8b6f47;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: clamp(14px, 3vw, 16px);
+            margin-top: 15px;
+            transition: background 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background: #6b5437;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .photo-upload-area {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-slot {
+            aspect-ratio: 1;
+            border: 2px dashed #d4a574;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        .upload-slot:hover {
+            border-color: #8b6f47;
+        }
+
+        .upload-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+        }
+
+        .upload-slot input {
+            display: none;
+        }
+
+        .upload-placeholder {
+            color: #999;
+            text-align: center;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: none;
+            text-align: center;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+
+        .status-message.active {
+            display: block;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .modal p {
+            font-size: clamp(12px, 3vw, 14px);
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-version">
+        <div class="background-texture"></div>
+        
+        <div class="title">for your eyes only</div>
+
+        <!-- Cassette Tape -->
+        <div class="cassette-tape" onclick="openCassetteModal()">
+            <img src="images/cassette.png" alt="Cassette Tape">
+        </div>
+
+        <!-- Envelope -->
+        <div class="envelope" onclick="openLetterModal()">
+            <img src="images/envelope.png" alt="Envelope">
+        </div>
+
+        <!-- Vinyl Player -->
+        <div class="vinyl-player" onclick="toggleVinylSpin()">
+            <img src="images/vinyl-player.png" alt="Vinyl Player">
+            <div class="vinyl-cd">
+                <img src="images/vinyl-disc.png" alt="Vinyl Disc" id="vinyl">
+            </div>
+        </div>
+
+        <!-- Photo Booth -->
+        <div class="photo-booth" onclick="openPhotoModal()">
+            <div class="photo-strip">
+                <div class="photo-frame" id="preview1">
+                    <span class="photo-placeholder">+</span>
+                </div>
+                <div class="photo-frame" id="preview2">
+                    <span class="photo-placeholder">+</span>
+                </div>
+                <div class="photo-frame" id="preview3">
+                    <span class="photo-placeholder">+</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket -->
+        <div class="ticket">
+            <img src="images/ticket.png" alt="Ticket">
+        </div>
+    </div>
+
+    <!-- Letter Modal -->
+    <div class="modal" id="letterModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLetterModal()">&times;</button>
+            <h2>Write Your Letter</h2>
+            <textarea id="letterText" placeholder="Dear Valentine,
+
+I wanted to tell you..."></textarea>
+            <button onclick="saveLetter()">Save Letter</button>
+            <div class="status-message" id="letterStatus">Letter saved! 💌</div>
+        </div>
+    </div>
+
+    <!-- Cassette Modal -->
+    <div class="modal" id="cassetteModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCassetteModal()">&times;</button>
+            <h2>Record Your Voice</h2>
+            <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Leave a voice message they'll treasure forever</p>
+            <div class="audio-controls">
+                <button id="recordBtn" onclick="startRecording()">🎙️ Start Recording</button>
+                <button id="stopBtn" onclick="stopRecording()" disabled>⏹️ Stop</button>
+                <button id="playBtn" onclick="playRecording()" disabled>▶️ Play</button>
+            </div>
+            <audio id="audioPlayback" controls style="display: none;"></audio>
+            <div class="status-message" id="audioStatus">Recording saved! 🎵</div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div class="modal" id="musicModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeMusicModal()">&times;</button>
+            <h2>Our Song</h2>
+            <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Share the song that reminds you of them</p>
+            <input type="text" id="songTitle" placeholder="Song title">
+            <input type="text" id="songArtist" placeholder="Artist">
+            <textarea id="songMessage" placeholder="Why this song is special to us..." style="min-height: 150px;"></textarea>
+            <button onclick="saveSong()">Save Song</button>
+            <div class="status-message" id="songStatus">Song saved! 🎵</div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePhotoModal()">&times;</button>
+            <h2>Our Memories</h2>
+            <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Upload photos of your favorite moments together</p>
+            <div class="photo-upload-area">
+                <div class="upload-slot" onclick="document.getElementById('photo1').click()">
+                    <input type="file" id="photo1" accept="image/*" onchange="handlePhotoUpload(event, 0)">
+                    <img id="uploadPreview1" style="display: none;">
+                    <span class="upload-placeholder">Click to upload</span>
+                </div>
+                <div class="upload-slot" onclick="document.getElementById('photo2').click()">
+                    <input type="file" id="photo2" accept="image/*" onchange="handlePhotoUpload(event, 1)">
+                    <img id="uploadPreview2" style="display: none;">
+                    <span class="upload-placeholder">Click to upload</span>
+                </div>
+                <div class="upload-slot" onclick="document.getElementById('photo3').click()">
+                    <input type="file" id="photo3" accept="image/*" onchange="handlePhotoUpload(event, 2)">
+                    <img id="uploadPreview3" style="display: none;">
+                    <span class="upload-placeholder">Click to upload</span>
+                </div>
+                <div class="upload-slot" onclick="document.getElementById('photo4').click()">
+                    <input type="file" id="photo4" accept="image/*" onchange="handlePhotoUpload(event, 3)">
+                    <img id="uploadPreview4" style="display: none;">
+                    <span class="upload-placeholder">Click to upload</span>
+                </div>
+            </div>
+            <div class="status-message" id="photoStatus">Photos uploaded! 📸</div>
+        </div>
+    </div>
+
+    <script>
+        // Letter functionality
+        function openLetterModal() {
+            document.getElementById('letterModal').classList.add('active');
+            const savedLetter = localStorage.getItem('valentineLetter');
+            if (savedLetter) {
+                document.getElementById('letterText').value = savedLetter;
+            }
+        }
+
+        function closeLetterModal() {
+            document.getElementById('letterModal').classList.remove('active');
+        }
+
+        function saveLetter() {
+            const letterText = document.getElementById('letterText').value;
+            localStorage.setItem('valentineLetter', letterText);
+            document.getElementById('letterStatus').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('letterStatus').classList.remove('active');
+            }, 3000);
+        }
+
+        // Audio recording functionality
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioBlob;
+
+        function openCassetteModal() {
+            document.getElementById('cassetteModal').classList.add('active');
+        }
+
+        function closeCassetteModal() {
+            document.getElementById('cassetteModal').classList.remove('active');
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioPlayback = document.getElementById('audioPlayback');
+                    audioPlayback.src = audioUrl;
+                    audioPlayback.style.display = 'block';
+                    document.getElementById('playBtn').disabled = false;
+                    
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        localStorage.setItem('valentineAudio', reader.result);
+                    };
+                    
+                    document.getElementById('audioStatus').classList.add('active');
+                    setTimeout(() => {
+                        document.getElementById('audioStatus').classList.remove('active');
+                    }, 3000);
+                };
+
+                mediaRecorder.start();
+                document.getElementById('recordBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+            } catch (error) {
+                alert('Microphone access denied. Please allow microphone access to record audio.');
+                console.error('Error accessing microphone:', error);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                document.getElementById('recordBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        function playRecording() {
+            const audioPlayback = document.getElementById('audioPlayback');
+            audioPlayback.play();
+        }
+
+        const savedAudio = localStorage.getItem('valentineAudio');
+        if (savedAudio) {
+            const audioPlayback = document.getElementById('audioPlayback');
+            audioPlayback.src = savedAudio;
+            audioPlayback.style.display = 'block';
+            document.getElementById('playBtn').disabled = false;
+        }
+
+        // Music/Song functionality
+        let isVinylSpinning = false;
+
+        function toggleVinylSpin() {
+            const vinyl = document.getElementById('vinyl');
+            isVinylSpinning = !isVinylSpinning;
+            
+            if (isVinylSpinning) {
+                vinyl.classList.add('spinning');
+            } else {
+                vinyl.classList.remove('spinning');
+            }
+            
+            openMusicModal();
+        }
+
+        function openMusicModal() {
+            document.getElementById('musicModal').classList.add('active');
+            const savedSong = localStorage.getItem('valentineSong');
+            if (savedSong) {
+                const song = JSON.parse(savedSong);
+                document.getElementById('songTitle').value = song.title || '';
+                document.getElementById('songArtist').value = song.artist || '';
+                document.getElementById('songMessage').value = song.message || '';
+            }
+        }
+
+        function closeMusicModal() {
+            document.getElementById('musicModal').classList.remove('active');
+        }
+
+        function saveSong() {
+            const song = {
+                title: document.getElementById('songTitle').value,
+                artist: document.getElementById('songArtist').value,
+                message: document.getElementById('songMessage').value
+            };
+            localStorage.setItem('valentineSong', JSON.stringify(song));
+            document.getElementById('songStatus').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('songStatus').classList.remove('active');
+            }, 3000);
+        }
+
+        // Photo upload functionality
+        let uploadedPhotos = JSON.parse(localStorage.getItem('valentinePhotos')) || [];
+
+        function openPhotoModal() {
+            document.getElementById('photoModal').classList.add('active');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        function handlePhotoUpload(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageData = e.target.result;
+                    
+                    const uploadPreview = document.getElementById(`uploadPreview${index + 1}`);
+                    uploadPreview.src = imageData;
+                    uploadPreview.style.display = 'block';
+                    uploadPreview.nextElementSibling.style.display = 'none';
+                    
+                    if (index < 3) {
+                        const mainPreview = document.getElementById(`preview${index + 1}`);
+                        mainPreview.innerHTML = `<img src="${imageData}" alt="Photo ${index + 1}">`;
+                    }
+                    
+                    uploadedPhotos[index] = imageData;
+                    localStorage.setItem('valentinePhotos', JSON.stringify(uploadedPhotos));
+                    
+                    document.getElementById('photoStatus').classList.add('active');
+                    setTimeout(() => {
+                        document.getElementById('photoStatus').classList.remove('active');
+                    }, 3000);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        uploadedPhotos.forEach((photo, index) => {
+            if (photo) {
+                const uploadPreview = document.getElementById(`uploadPreview${index + 1}`);
+                if (uploadPreview) {
+                    uploadPreview.src = photo;
+                    uploadPreview.style.display = 'block';
+                    uploadPreview.nextElementSibling.style.display = 'none';
+                }
+                
+                if (index < 3) {
+                    const mainPreview = document.getElementById(`preview${index + 1}`);
+                    if (mainPreview) {
+                        mainPreview.innerHTML = `<img src="${photo}" alt="Photo ${index + 1}">`;
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
