@@ -103,10 +103,10 @@
             width: 84.61%;  /* 296.15/350 */
             height: 40.04%; /* 238.26/595 */
             left: -18%;  /* -92.12/350 */
-            top: 48.07%;    /* 286/595 */
+            top: 42%;    /* 286/595 */
             cursor: pointer;
             transition: transform 0.3s ease;
-            z-index: 3;
+            z-index: 5;
         }
 
         .vinyl-player:hover {
@@ -128,6 +128,9 @@
             left: 7.6%;     /* 22.51/296.15 relative to vinyl-player */
             top: 4.33%;     /* 10.32/238.26 relative to vinyl-player */
             z-index: 2;
+            display: flex;
+    align-items: center;
+    justify-content: center;
         }
 
         .vinyl-cd img {
@@ -135,6 +138,7 @@
             height: 100%;
             object-fit: contain;
             transition: transform 0.3s ease;
+            transform-origin: center center;
         }
 
         .vinyl-cd img.spinning {
