@@ -325,7 +325,7 @@ body::after {
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.85);
-            z-index: 999;
+            z-index: 99999;
             align-items: center;
             justify-content: center;
             padding: 20px;
@@ -640,7 +640,73 @@ I wanted to tell you..."></textarea>
         </div>
     </div>
 
+<!-- Ticket Modal -->
+<div class="modal" id="ticketModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeTicketModal()">&times;</button>
+        <h2>Record a Video Message</h2>
+
+        <video id="ticketCamera" autoplay playsinline style="width:100%; border-radius:8px;"></video>
+
+        <div style="margin-top:15px;">
+            <button onclick="startVideoRecording()">🎥 Start Recording</button>
+            <button onclick="stopVideoRecording()">⏹ Stop</button>
+        </div>
+
+        <video id="ticketPlayback" controls style="width:100%; margin-top:15px; display:none;"></video>
+    </div>
+</div>
+
+    
     <script>
+
+        let ticketStream;
+let ticketRecorder;
+let ticketChunks = [];
+
+async function startCamera() {
+    try {
+        ticketStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const video = document.getElementById('ticketCamera');
+        video.srcObject = ticketStream;
+    } catch (err) {
+        alert("Camera access denied.");
+        console.error(err);
+    }
+}
+
+function stopCamera() {
+    if (ticketStream) {
+        ticketStream.getTracks().forEach(track => track.stop());
+    }
+}
+
+function startVideoRecording() {
+    if (!ticketStream) return;
+
+    ticketRecorder = new MediaRecorder(ticketStream);
+    ticketChunks = [];
+
+    ticketRecorder.ondataavailable = e => {
+        ticketChunks.push(e.data);
+    };
+
+    ticketRecorder.onstop = () => {
+        const blob = new Blob(ticketChunks, { type: "video/webm" });
+        const playback = document.getElementById("ticketPlayback");
+        playback.src = URL.createObjectURL(blob);
+        playback.style.display = "block";
+    };
+
+    ticketRecorder.start();
+}
+
+function stopVideoRecording() {
+    if (ticketRecorder && ticketRecorder.state !== "inactive") {
+        ticketRecorder.stop();
+    }
+}
+
 
         let mediaRecorder;
 let recordedChunks = [];
