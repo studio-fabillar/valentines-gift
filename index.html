@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>For Your Eyes Only</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        body {
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-version {
+            position: relative;
+            width: 350px;
+            height: 595px;
+            background: #E7E0CF;
+            overflow: hidden;
+        }
+
+        /* Red borders */
+        .top-frame {
+            position: absolute;
+            width: 100%;
+            height: 7px;
+            top: 0;
+            left: 0;
+            background: #8A0A09;
+            z-index: 100;
+        }
+
+        .bottom-frame {
+            position: absolute;
+            width: 100%;
+            height: 7px;
+            bottom: 0;
+            left: 0;
+            background: #8A0A09;
+            z-index: 100;
+        }
+
+        .left-frame {
+            position: absolute;
+            width: 6px;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: #8A0A09;
+            z-index: 100;
+        }
+
+        .right-frame {
+            position: absolute;
+            width: 6px;
+            height: 100%;
+            right: 0;
+            top: 0;
+            background: #8A0A09;
+            z-index: 100;
+        }
+
+        .background-texture {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/background.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Title 1 */
+        .title1 {
+            position: absolute;
+            width: 143px;
+            height: 50px;
+            left: 50px;
+            top: 21px;
+            z-index: 10;
+        }
+
+        .title1 img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: rotate(-6.82deg);
+        }
+
+        /* Title 2 */
+        .title2 {
+            position: absolute;
+            width: 125px;
+            height: 21px;
+            left: 66px;
+            top: 532px;
+            z-index: 10;
+        }
+
+        .title2 img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: rotate(-1.03deg);
+        }
+
+        /* Dice */
+        .dice {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            left: 278px;
+            top: 25px;
+            z-index: 5;
+        }
+
+        .dice img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform: matrix(-1, 0, 0, 1, 0, 0);
+        }
+
+        /* Cassette */
+        .cassette {
+            position: absolute;
+            width: 163.31px;
+            height: 103.54px;
+            left: 25px;
+            top: 95px;
+            transform: rotate(90deg);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 5;
+        }
+
+        .cassette:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+
+        .cassette img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Envelope */
+        .envelope {
+            position: absolute;
+            width: 319.01px;
+            height: 230.07px;
+            left: 33.4px;
+            top: 112.74px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .envelope:active {
+            transform: scale(0.95);
+        }
+
+        .envelope img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Ticket */
+        .ticket {
+            position: absolute;
+            width: 115.5px;
+            height: 60.38px;
+            left: 166px;
+            top: 54px;
+            z-index: 2;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .ticket:active {
+            transform: scale(0.95);
+        }
+
+        .ticket img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Vinyl Player */
+        .vinyl-player {
+            position: absolute;
+            width: 296.15px;
+            height: 238.26px;
+            left: -92.12px;
+            top: 286px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 2;
+        }
+
+        .vinyl-player:active {
+            transform: scale(0.95);
+        }
+
+        .vinyl-player-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .vinyl-player-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Vinyl Disc */
+        .vinyl-disc {
+            position: absolute;
+            width: 209.66px;
+            height: 214.71px;
+            left: 22.51px;
+            top: 10.32px;
+        }
+
+        .vinyl-disc img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .vinyl-disc img.spinning {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Card */
+        .card {
+            position: absolute;
+            width: 92px;
+            height: 132px;
+            left: 140px;
+            top: 440px;
+            z-index: 3;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Photo Strip */
+        .photo-strip-container {
+            position: absolute;
+            width: 200px;
+            height: 287px;
+            left: 152px;
+            top: 219px;
+            transform: rotate(13.29deg);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 6;
+        }
+
+        .photo-strip-container:active {
+            transform: rotate(13.29deg) scale(0.95);
+        }
+
+        .photo-strip-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .photo-slot {
+            position: absolute;
+            width: 90px;
+            height: 60px;
+            overflow: hidden;
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-slot[data-slot="1"] { top: 18px; left: 55px; }
+        .photo-slot[data-slot="2"] { top: 88px; left: 55px; }
+        .photo-slot[data-slot="3"] { top: 158px; left: 55px; }
+        .photo-slot[data-slot="4"] { top: 228px; left: 55px; }
+
+        /* Completion badges */
+        .completed-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .completed-badge.active {
+            display: flex;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fffef7;
+            padding: 40px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #5a4a3a;
+            font-size: 28px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .completion-view {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .completion-view.active {
+            display: block;
+        }
+
+        .completion-view h3 {
+            color: #4CAF50;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .completion-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .completion-summary {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 20px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            resize: vertical;
+            background: #fffef7;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+
+        button {
+            background: #8b6f47;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background: #6b5437;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .photo-upload-area {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .upload-slot {
+            aspect-ratio: 1;
+            border: 2px dashed #d4a574;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: #f9f9f9;
+            transition: border-color 0.3s;
+        }
+
+        .upload-slot:hover {
+            border-color: #8b6f47;
+        }
+
+        .upload-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+        }
+
+        .upload-slot input {
+            display: none;
+        }
+
+        .upload-placeholder {
+            color: #999;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 4px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            display: none;
+            text-align: center;
+        }
+
+        .status-message.active {
+            display: block;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        video {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 400px) {
+            .mobile-version {
+                width: 100vw;
+                height: calc(100vw * 1.7);
+            }
+        }
+
+        @media (min-width: 401px) {
+            body {
+                transform: scale(calc(min(100vw / 350px, 100vh / 595px)));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-version">
+        <div class="background-texture"></div>
+        
+        <!-- Frames -->
+        <div class="top-frame"></div>
+        <div class="bottom-frame"></div>
+        <div class="left-frame"></div>
+        <div class="right-frame"></div>
+
+        <!-- Title 1 -->
+        <div class="title1">
+            <img src="images/title1.png" alt="You will always be my valentine">
+        </div>
+
+        <!-- Title 2 -->
+        <div class="title2">
+            <img src="images/title2.png" alt="Love of my life">
+        </div>
+
+        <!-- Dice -->
+        <div class="dice">
+            <img src="images/dice.png" alt="Dice">
+        </div>
+
+        <!-- Cassette -->
+        <div class="cassette" onclick="openCassetteModal()">
+            <img src="images/cassette.png" alt="Cassette Tape">
+            <div class="completed-badge" id="cassetteBadge">✓</div>
+        </div>
+
+        <!-- Ticket -->
+        <div class="ticket" onclick="openTicketModal()">
+            <img src="images/ticket.png" alt="Ticket">
+            <div class="completed-badge" id="ticketBadge">✓</div>
+        </div>
+
+        <!-- Envelope -->
+        <div class="envelope" onclick="openLetterModal()">
+            <img src="images/envelope.png" alt="Envelope">
+            <div class="completed-badge" id="letterBadge">✓</div>
+        </div>
+
+        <!-- Vinyl Player -->
+        <div class="vinyl-player" onclick="toggleVinylSpin()">
+            <div class="vinyl-player-bg">
+                <img src="images/vinyl-player.png" alt="Vinyl Player">
+            </div>
+            <div class="vinyl-disc">
+                <img src="images/vinyl-disc.png" alt="Vinyl Disc" id="vinyl">
+            </div>
+            <div class="completed-badge" id="vinylBadge" style="right: 100px;">✓</div>
+        </div>
+
+        <!-- Photo Strip -->
+        <div class="photo-strip-container" onclick="openPhotoModal()">
+            <img src="images/photo-strip.png" class="photo-strip-bg" alt="Photo Strip">
+            <div class="photo-slot" data-slot="1"></div>
+            <div class="photo-slot" data-slot="2"></div>
+            <div class="photo-slot" data-slot="3"></div>
+            <div class="photo-slot" data-slot="4"></div>
+            <div class="completed-badge" id="photoBadge">✓</div>
+        </div>
+
+        <!-- Card -->
+        <div class="card">
+            <img src="images/card.png" alt="Card">
+        </div>
+    </div>
+
+    <!-- Letter Modal -->
+    <div class="modal" id="letterModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeLetterModal()">&times;</button>
+            
+            <div id="letterInput">
+                <h2>Write Your Letter</h2>
+                <textarea id="letterText" placeholder="Dear Valentine,
+
+I wanted to tell you..."></textarea>
+                <button onclick="saveLetter()">Save Letter</button>
+            </div>
+
+            <div class="completion-view" id="letterComplete">
+                <div class="completion-icon">💌</div>
+                <h3>Letter Saved!</h3>
+                <p>Your heartfelt message has been saved</p>
+                <div class="completion-summary">
+                    <strong>Preview:</strong>
+                    <p id="letterPreview" style="margin-top: 10px; font-style: italic;"></p>
+                </div>
+                <button onclick="editLetter()">Edit Letter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cassette Modal -->
+    <div class="modal" id="cassetteModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCassetteModal()">&times;</button>
+            
+            <div id="cassetteInput">
+                <h2>Record Your Voice</h2>
+                <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Leave a voice message they'll treasure forever</p>
+                <div class="audio-controls">
+                    <button id="recordBtn" onclick="startAudioRecording()">🎙️ Start Recording</button>
+                    <button id="stopBtn" onclick="stopAudioRecording()" disabled>⏹️ Stop</button>
+                    <button id="playBtn" onclick="playRecording()" disabled>▶️ Play</button>
+                </div>
+                <audio id="audioPlayback" controls style="display: none;"></audio>
+            </div>
+
+            <div class="completion-view" id="cassetteComplete">
+                <div class="completion-icon">🎵</div>
+                <h3>Voice Message Saved!</h3>
+                <p>Your voice message is ready</p>
+                <audio id="savedAudioPlayback" controls style="width: 100%; margin-top: 20px;"></audio>
+                <button onclick="rerecordAudio()">Record Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div class="modal" id="musicModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeMusicModal()">&times;</button>
+            
+            <div id="musicInput">
+                <h2>Our Song</h2>
+                <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Share the song that reminds you of them</p>
+                <input type="text" id="songTitle" placeholder="Song title">
+                <input type="text" id="songArtist" placeholder="Artist">
+                <input type="text" id="spotifyUrl" placeholder="Spotify song URL (https://open.spotify.com/track/...)">
+                <textarea id="songMessage" placeholder="Why this song is special to us..." style="min-height: 150px;"></textarea>
+                <button onclick="saveSong()">Save Song</button>
+            </div>
+
+            <div class="completion-view" id="musicComplete">
+                <div class="completion-icon">🎶</div>
+                <h3>Song Saved!</h3>
+                <div class="completion-summary">
+                    <p><strong id="savedTitle"></strong></p>
+                    <p style="color: #666;"><em id="savedArtist"></em></p>
+                    <p style="margin-top: 15px;" id="savedMessage"></p>
+                </div>
+                <button onclick="editSong()">Edit Song</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePhotoModal()">&times;</button>
+            
+            <div id="photoInput">
+                <h2>Our Memories</h2>
+                <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Upload photos of your favorite moments together</p>
+                <div class="photo-upload-area">
+                    <div class="upload-slot" onclick="document.getElementById('photo1').click()">
+                        <input type="file" id="photo1" accept="image/*" onchange="handlePhotoUpload(event, 0)">
+                        <img id="uploadPreview1" style="display: none;">
+                        <span class="upload-placeholder">Click to upload</span>
+                    </div>
+                    <div class="upload-slot" onclick="document.getElementById('photo2').click()">
+                        <input type="file" id="photo2" accept="image/*" onchange="handlePhotoUpload(event, 1)">
+                        <img id="uploadPreview2" style="display: none;">
+                        <span class="upload-placeholder">Click to upload</span>
+                    </div>
+                    <div class="upload-slot" onclick="document.getElementById('photo3').click()">
+                        <input type="file" id="photo3" accept="image/*" onchange="handlePhotoUpload(event, 2)">
+                        <img id="uploadPreview3" style="display: none;">
+                        <span class="upload-placeholder">Click to upload</span>
+                    </div>
+                    <div class="upload-slot" onclick="document.getElementById('photo4').click()">
+                        <input type="file" id="photo4" accept="image/*" onchange="handlePhotoUpload(event, 3)">
+                        <img id="uploadPreview4" style="display: none;">
+                        <span class="upload-placeholder">Click to upload</span>
+                    </div>
+                </div>
+                <button onclick="finishPhotos()" style="margin-top: 20px;">Done</button>
+            </div>
+
+            <div class="completion-view" id="photoComplete">
+                <div class="completion-icon">📸</div>
+                <h3>Memories Saved!</h3>
+                <p><span id="photoCount">0</span> photos uploaded</p>
+                <div class="photo-upload-area" id="photoReview" style="margin-top: 20px;"></div>
+                <button onclick="editPhotos()">Edit Photos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Modal (Video Recording) -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeTicketModal()">&times;</button>
+            
+            <div id="ticketInput">
+                <h2>Record a Video Message</h2>
+                <video id="ticketCamera" autoplay playsinline></video>
+                <div style="margin-top:15px;">
+                    <button id="startVideoBtn" onclick="startVideoRecording()">🎥 Start Recording</button>
+                    <button id="stopVideoBtn" onclick="stopVideoRecording()" disabled>⏹ Stop</button>
+                </div>
+                <video id="ticketPlayback" controls style="display:none; margin-top:15px;"></video>
+                <button id="saveVideoBtn" onclick="saveVideo()" style="display:none;">Save Video</button>
+            </div>
+
+            <div class="completion-view" id="ticketComplete">
+                <div class="completion-icon">🎬</div>
+                <h3>Video Saved!</h3>
+                <p>Your video message is ready</p>
+                <video id="savedVideoPlayback" controls style="width: 100%; margin-top: 20px; border-radius: 8px;"></video>
+                <button onclick="rerecordVideo()">Record Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotify Player -->
+    <div id="spotifyPlayerContainer" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: none; width: 90%; max-width: 400px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); border-radius: 12px; overflow: hidden;">
+        <div style="background: #1db954; padding: 8px; text-align: center; color: white; font-family: 'Courier New', monospace; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span>🎵 Now Playing</span>
+            <button onclick="closeSpotifyPlayer()" style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">×</button>
+        </div>
+        <iframe id="spotifyPlayer" style="width:100%;height:152px;border:none;" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    </div>
+
+    <script>
+        // Global variables
+        let audioMediaRecorder;
+        let audioChunks = [];
+        let ticketStream;
+        let ticketRecorder;
+        let ticketChunks = [];
+        let isVinylSpinning = false;
+        let savedVideoBlob;
+
+        // Check completions on load
+        window.addEventListener('load', checkCompletions);
+
+        function checkCompletions() {
+            if (localStorage.getItem('valentineLetter')) {
+                document.getElementById('letterBadge').classList.add('active');
+            }
+            if (localStorage.getItem('valentineAudio')) {
+                document.getElementById('cassetteBadge').classList.add('active');
+            }
+            if (localStorage.getItem('valentineSong')) {
+                document.getElementById('vinylBadge').classList.add('active');
+            }
+            const photos = JSON.parse(localStorage.getItem('valentinePhotos') || '[]');
+            if (photos.filter(p => p).length > 0) {
+                document.getElementById('photoBadge').classList.add('active');
+            }
+            if (localStorage.getItem('valentineVideo')) {
+                document.getElementById('ticketBadge').classList.add('active');
+            }
+        }
+
+        // Letter functionality
+        function openLetterModal() {
+            document.getElementById('letterModal').classList.add('active');
+            const savedLetter = localStorage.getItem('valentineLetter');
+            if (savedLetter) {
+                document.getElementById('letterInput').style.display = 'none';
+                document.getElementById('letterComplete').classList.add('active');
+                document.getElementById('letterPreview').textContent = savedLetter.substring(0, 150) + '...';
+            } else {
+                document.getElementById('letterText').value = '';
+            }
+        }
+
+        function closeLetterModal() {
+            document.getElementById('letterModal').classList.remove('active');
+        }
+
+        function saveLetter() {
+            const letterText = document.getElementById('letterText').value;
+            if (!letterText.trim()) {
+                alert('Please write something first!');
+                return;
+            }
+            localStorage.setItem('valentineLetter', letterText);
+            document.getElementById('letterInput').style.display = 'none';
+            document.getElementById('letterComplete').classList.add('active');
+            document.getElementById('letterPreview').textContent = letterText.substring(0, 150) + (letterText.length > 150 ? '...' : '');
+            document.getElementById('letterBadge').classList.add('active');
+        }
+
+        function editLetter() {
+            const letterText = localStorage.getItem('valentineLetter');
+            document.getElementById('letterText').value = letterText;
+            document.getElementById('letterInput').style.display = 'block';
+            document.getElementById('letterComplete').classList.remove('active');
+        }
+
+        // Audio recording functionality
+        function openCassetteModal() {
+            document.getElementById('cassetteModal').classList.add('active');
+            const savedAudio = localStorage.getItem('valentineAudio');
+            if (savedAudio) {
+                document.getElementById('cassetteInput').style.display = 'none';
+                document.getElementById('cassetteComplete').classList.add('active');
+                document.getElementById('savedAudioPlayback').src = savedAudio;
+            }
+        }
+
+        function closeCassetteModal() {
+            document.getElementById('cassetteModal').classList.remove('active');
+        }
+
+        async function startAudioRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioMediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                audioMediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                audioMediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audioPlayback = document.getElementById('audioPlayback');
+                    audioPlayback.src = audioUrl;
+                    audioPlayback.style.display = 'block';
+                    document.getElementById('playBtn').disabled = false;
+                    
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        localStorage.setItem('valentineAudio', reader.result);
+                        document.getElementById('cassetteBadge').classList.add('active');
+                        
+                        // Show completion view
+                        setTimeout(() => {
+                            document.getElementById('cassetteInput').style.display = 'none';
+                            document.getElementById('cassetteComplete').classList.add('active');
+                            document.getElementById('savedAudioPlayback').src = reader.result;
+                        }, 1000);
+                    };
+                };
+
+                audioMediaRecorder.start();
+                document.getElementById('recordBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+            } catch (error) {
+                alert('Microphone access denied. Please allow microphone access to record audio.');
+            }
+        }
+
+        function stopAudioRecording() {
+            if (audioMediaRecorder && audioMediaRecorder.state !== 'inactive') {
+                audioMediaRecorder.stop();
+                audioMediaRecorder.stream.getTracks().forEach(track => track.stop());
+                document.getElementById('recordBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        function playRecording() {
+            document.getElementById('audioPlayback').play();
+        }
+
+        function rerecordAudio() {
+            document.getElementById('cassetteInput').style.display = 'block';
+            document.getElementById('cassetteComplete').classList.remove('active');
+            document.getElementById('audioPlayback').style.display = 'none';
+        }
+
+        // Video recording functionality
+        function openTicketModal() {
+            document.getElementById('ticketModal').classList.add('active');
+            const savedVideo = localStorage.getItem('valentineVideo');
+            if (savedVideo) {
+                document.getElementById('ticketInput').style.display = 'none';
+                document.getElementById('ticketComplete').classList.add('active');
+                document.getElementById('savedVideoPlayback').src = savedVideo;
+            } else {
+                startCamera();
+            }
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticketModal').classList.remove('active');
+            stopCamera();
+        }
+
+        async function startCamera() {
+            try {
+                ticketStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('ticketCamera').srcObject = ticketStream;
+            } catch (err) {
+                alert("Camera access denied.");
+            }
+        }
+
+        function stopCamera() {
+            if (ticketStream) {
+                ticketStream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function startVideoRecording() {
+            if (!ticketStream) return;
+            ticketRecorder = new MediaRecorder(ticketStream);
+            ticketChunks = [];
+
+            ticketRecorder.ondataavailable = e => ticketChunks.push(e.data);
+            ticketRecorder.onstop = () => {
+                savedVideoBlob = new Blob(ticketChunks, { type: "video/webm" });
+                const playback = document.getElementById("ticketPlayback");
+                playback.src = URL.createObjectURL(savedVideoBlob);
+                playback.style.display = "block";
+                document.getElementById('saveVideoBtn').style.display = 'block';
+            };
+
+            ticketRecorder.start();
+            document.getElementById('startVideoBtn').disabled = true;
+            document.getElementById('stopVideoBtn').disabled = false;
+        }
+
+        function stopVideoRecording() {
+            if (ticketRecorder && ticketRecorder.state !== "inactive") {
+                ticketRecorder.stop();
+                document.getElementById('startVideoBtn').disabled = false;
+                document.getElementById('stopVideoBtn').disabled = true;
+            }
+        }
+
+        function saveVideo() {
+            const reader = new FileReader();
+            reader.readAsDataURL(savedVideoBlob);
+            reader.onloadend = () => {
+                localStorage.setItem('valentineVideo', reader.result);
+                document.getElementById('ticketBadge').classList.add('active');
+                document.getElementById('ticketInput').style.display = 'none';
+                document.getElementById('ticketComplete').classList.add('active');
+                document.getElementById('savedVideoPlayback').src = reader.result;
+            };
+        }
+
+        function rerecordVideo() {
+            document.getElementById('ticketInput').style.display = 'block';
+            document.getElementById('ticketComplete').classList.remove('active');
+            document.getElementById('ticketPlayback').style.display = 'none';
+            document.getElementById('saveVideoBtn').style.display = 'none';
+            startCamera();
+        }
+
+        // Music/Vinyl functionality
+        function toggleVinylSpin() {
+            const vinyl = document.getElementById('vinyl');
+            const savedSong = localStorage.getItem('valentineSong');
+
+            isVinylSpinning = !isVinylSpinning;
+
+            if (isVinylSpinning) {
+                vinyl.classList.add('spinning');
+                if (savedSong) {
+                    const song = JSON.parse(savedSong);
+                    if (song.spotifyUrl) {
+                        playSpotifySong(song.spotifyUrl);
+                    } else {
+                        openMusicModal();
+                    }
+                } else {
+                    openMusicModal();
+                }
+            } else {
+                vinyl.classList.remove('spinning');
+                closeSpotifyPlayer();
+            }
+        }
+
+        function openMusicModal() {
+            document.getElementById('musicModal').classList.add('active');
+            const savedSong = localStorage.getItem('valentineSong');
+            if (savedSong) {
+                const song = JSON.parse(savedSong);
+                document.getElementById('musicInput').style.display = 'none';
+                document.getElementById('musicComplete').classList.add('active');
+                document.getElementById('savedTitle').textContent = song.title;
+                document.getElementById('savedArtist').textContent = song.artist;
+                document.getElementById('savedMessage').textContent = song.message;
+            }
+        }
+
+        function closeMusicModal() {
+            document.getElementById('musicModal').classList.remove('active');
+        }
+
+        function saveSong() {
+            const song = {
+                title: document.getElementById('songTitle').value,
+                artist: document.getElementById('songArtist').value,
+                spotifyUrl: document.getElementById('spotifyUrl').value,
+                message: document.getElementById('songMessage').value
+            };
+
+            if (!song.title || !song.artist) {
+                alert('Please fill in song title and artist!');
+                return;
+            }
+
+            localStorage.setItem('valentineSong', JSON.stringify(song));
+            document.getElementById('vinylBadge').classList.add('active');
+
+            document.getElementById('musicInput').style.display = 'none';
+            document.getElementById('musicComplete').classList.add('active');
+            document.getElementById('savedTitle').textContent = song.title;
+            document.getElementById('savedArtist').textContent = song.artist;
+            document.getElementById('savedMessage').textContent = song.message;
+
+            if (song.spotifyUrl) {
+                playSpotifySong(song.spotifyUrl);
+            }
+        }
+
+        function editSong() {
+            const song = JSON.parse(localStorage.getItem('valentineSong'));
+            document.getElementById('songTitle').value = song.title;
+            document.getElementById('songArtist').value = song.artist;
+            document.getElementById('spotifyUrl').value = song.spotifyUrl;
+            document.getElementById('songMessage').value = song.message;
+            document.getElementById('musicInput').style.display = 'block';
+            document.getElementById('musicComplete').classList.remove('active');
+        }
+
+        function playSpotifySong(url) {
+            let trackId = '';
+            if (url.includes('open.spotify.com/track/')) {
+                trackId = url.split('track/')[1].split('?')[0];
+            } else if (url.includes('spotify:track:')) {
+                trackId = url.split('spotify:track:')[1];
+            }
+
+            if (trackId) {
+                document.getElementById('spotifyPlayer').src = `https://open.spotify.com/embed/track/${trackId}`;
+                document.getElementById('spotifyPlayerContainer').style.display = 'block';
+            }
+        }
+
+        function closeSpotifyPlayer() {
+            document.getElementById('spotifyPlayerContainer').style.display = 'none';
+            document.getElementById('spotifyPlayer').src = '';
+            document.getElementById('vinyl').classList.remove('spinning');
+            isVinylSpinning = false;
+        }
+
+        // Photo upload functionality
+        let uploadedPhotos = JSON.parse(localStorage.getItem('valentinePhotos') || '[]');
+
+        function openPhotoModal() {
+            document.getElementById('photoModal').classList.add('active');
+            if (uploadedPhotos.filter(p => p).length > 0) {
+                showPhotoCompletion();
+            }
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('active');
+        }
+
+        function handlePhotoUpload(event, index) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageData = e.target.result;
+                    const uploadPreview = document.getElementById(`uploadPreview${index + 1}`);
+                    uploadPreview.src = imageData;
+                    uploadPreview.style.display = 'block';
+                    uploadPreview.nextElementSibling.style.display = 'none';
+                    
+                    const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
+                    mainPreview.innerHTML = `<img src="${imageData}">`;
+                    
+                    uploadedPhotos[index] = imageData;
+                    localStorage.setItem('valentinePhotos', JSON.stringify(uploadedPhotos));
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function finishPhotos() {
+            const count = uploadedPhotos.filter(p => p).length;
+            if (count === 0) {
+                alert('Please upload at least one photo!');
+                return;
+            }
+            document.getElementById('photoBadge').classList.add('active');
+            showPhotoCompletion();
+        }
+
+        function showPhotoCompletion() {
+            const count = uploadedPhotos.filter(p => p).length;
+            document.getElementById('photoInput').style.display = 'none';
+            document.getElementById('photoComplete').classList.add('active');
+            document.getElementById('photoCount').textContent = count;
+            
+            const review = document.getElementById('photoReview');
+            review.innerHTML = '';
+            uploadedPhotos.forEach((photo, i) => {
+                if (photo) {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'border-radius: 4px; overflow: hidden;';
+                    div.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;">`;
+                    review.appendChild(div);
+                }
+            });
+        }
+
+        function editPhotos() {
+            document.getElementById('photoInput').style.display = 'block';
+            document.getElementById('photoComplete').classList.remove('active');
+        }
+
+        // Load saved photos
+        uploadedPhotos.forEach((photo, index) => {
+            if (photo) {
+                const uploadPreview = document.getElementById(`uploadPreview${index + 1}`);
+                if (uploadPreview) {
+                    uploadPreview.src = photo;
+                    uploadPreview.style.display = 'block';
+                    uploadPreview.nextElementSibling.style.display = 'none';
+                }
+                const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
+                if (mainPreview) {
+                    mainPreview.innerHTML = `<img src="${photo}">`;
+                }
+            }
+        });
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
