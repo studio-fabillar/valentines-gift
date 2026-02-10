@@ -806,6 +806,23 @@ function closeSpotifyPlayer() {
     }
 }
 
+        function openMusicModal() {
+    document.getElementById('musicModal').classList.add('active');
+
+    const savedSong = localStorage.getItem('valentineSong');
+    if (savedSong) {
+        const song = JSON.parse(savedSong);
+        document.getElementById('songTitle').value = song.title || '';
+        document.getElementById('songArtist').value = song.artist || '';
+        document.getElementById('spotifyUrl').value = song.spotifyUrl || '';
+        document.getElementById('songMessage').value = song.message || '';
+    }
+}
+
+function closeMusicModal() {
+    document.getElementById('musicModal').classList.remove('active');
+}
+
         // Photo upload functionality
         let uploadedPhotos = JSON.parse(localStorage.getItem('valentinePhotos')) || [];
 
