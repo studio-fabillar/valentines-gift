@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" 
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>For Your Eyes Only</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +18,14 @@
 
     body {
   margin: 0;
+        padding: 0;
   background: #E7E0CF;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100dvh;
   overflow: hidden;
+         touch-action: manipulation;
 }
 
 .mobile-version {
@@ -523,7 +527,7 @@ body::after {
         </div>
 
         <!-- Ticket -->
-        <div class="ticket">
+      <div class="ticket" onclick="openTicketModal()">
             <img src="images/ticket.png" alt="Ticket">
         </div>
 
@@ -637,6 +641,54 @@ I wanted to tell you..."></textarea>
     </div>
 
     <script>
+
+        let mediaRecorder;
+let recordedChunks = [];
+
+function openTicketModal() {
+    document.getElementById('ticketModal').classList.add('active');
+    startCamera();
+}
+
+function closeTicketModal() {
+    document.getElementById('ticketModal').classList.remove('active');
+    stopCamera();
+}
+
+        async function startCamera() {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const video = document.getElementById('ticketVideo');
+    video.srcObject = stream;
+
+    mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = event => {
+        recordedChunks.push(event.data);
+    };
+
+    mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        document.getElementById('recordedVideo').src = url;
+        recordedChunks = [];
+    };
+}
+
+function stopCamera() {
+    const video = document.getElementById('ticketVideo');
+    if (video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+}
+function startRecording() {
+    recordedChunks = [];
+    mediaRecorder.start();
+}
+
+function stopRecording() {
+    mediaRecorder.stop();
+}
+
         // Letter functionality
         function openLetterModal() {
             document.getElementById('letterModal').classList.add('active');
