@@ -14,32 +14,43 @@
             box-sizing: border-box;
         }
 
-      body {
+     html, body {
   margin: 0;
-  background: #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-        .app-wrapper {
-  width: min(100vw, calc(100vh * 350 / 595));
-  height: min(100vh, calc(100vw * 595 / 350));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-       .mobile-version {
-  width: 350px;
-  height: 595px;
-  position: relative;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
   background: #E7E0CF;
+}
+
+/* Red side borders */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 6px;
+  background: #8A0A09;
+  z-index: 9999;
+}
+
+body::before {
+  left: 0;
+}
+
+body::after {
+  right: 0;
+}
+
+     
+
+
+      .mobile-version {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
   overflow: hidden;
-  transform-origin: center;
-  transform: scale(var(--scale));
+  background: #E7E0CF;
 }
 
         .background-texture {
@@ -53,46 +64,7 @@
             background-position: center;
         }
 
-        /* Frames */
-        .top-frame {
-            position: absolute;
-            width: 350px;
-            height: 7px;
-            left: 0px;
-            top: 0px;
-            background: #8A0A09;
-            z-index: 100;
-        }
-
-        .left-frame {
-            position: absolute;
-            width: 6px;
-            height: 596px;
-            left: 0px;
-            top: 0px;
-            background: #8A0A09;
-            z-index: 100;
-        }
-
-        .right-frame {
-            position: absolute;
-            width: 6px;
-            height: 596px;
-            left: 344px;
-            top: -4px;
-            background: #8A0A09;
-            z-index: 100;
-        }
-
-        .bottom-frame {
-            position: absolute;
-            width: 350px;
-            height: 7px;
-            left: 0px;
-            top: 588px;
-            background: #8A0A09;
-            z-index: 100;
-        }
+       
 
         /* Title 1 */
         .title1 {
@@ -177,7 +149,7 @@
             top: 112.74px;
             cursor: pointer;
             transition: transform 0.3s ease;
-            z-index: 4;
+            z-index: 1;
         }
 
         .envelope:hover {
@@ -215,7 +187,7 @@
             top: 286px;
             cursor: pointer;
             transition: transform 0.3s ease;
-            z-index: 3;
+            z-index: 2;
         }
 
         .vinyl-player:hover {
@@ -241,7 +213,7 @@
             height: 214.71px;
             left: 22.51px;
             top: 10.32px;
-            z-index: 4;
+          
         }
 
         .vinyl-disc img {
@@ -267,7 +239,7 @@
             height: 132px;
             left: 140px;
             top: 440px;
-            z-index: 5;
+            z-index: 3;
         }
 
         .card img {
@@ -286,7 +258,7 @@
             transform: rotate(13.29deg);
             cursor: pointer;
             transition: transform 0.3s ease;
-            z-index: 6;
+            z-index: 10;
         }
 
         .photo-strip-container:hover {
@@ -531,18 +503,7 @@
     </style>
 </head>
 <body>
-  <div class="app-wrapper">
-    <div class="mobile-version">
-    </div>
-  </div>
-
-        
-        <!-- Frames -->
-        <div class="top-frame"></div>
-        <div class="left-frame"></div>
-        <div class="right-frame"></div>
-        <div class="bottom-frame"></div>
-
+<div class="mobile-version">
         <!-- Title 1 -->
         <div class="title1">
             <img src="images/title1.png" alt="You will always be my valentine">
@@ -884,17 +845,7 @@ I wanted to tell you..."></textarea>
             });
         });
     </script>
-    <script>
-  function updateScale() {
-    const scaleX = window.innerWidth / 350;
-    const scaleY = window.innerHeight / 595;
-    const scale = Math.min(scaleX, scaleY);
-    document.documentElement.style.setProperty('--scale', scale);
-  }
-
-  window.addEventListener('resize', updateScale);
-  updateScale();
-</script>
+   
 
 </body>
 </html>
