@@ -596,6 +596,8 @@ I wanted to tell you..."></textarea>
             <p style="color: #666; margin-bottom: 20px; font-family: 'Courier New', monospace;">Share the song that reminds you of them</p>
             <input type="text" id="songTitle" placeholder="Song title">
             <input type="text" id="songArtist" placeholder="Artist">
+            <input type="text" id="spotifyUrl" placeholder="Spotify song URL (https://open.spotify.com/track/...)">
+
             <textarea id="songMessage" placeholder="Why this song is special to us..." style="min-height: 150px;"></textarea>
             <button onclick="saveSong()">Save Song</button>
             <div class="status-message" id="songStatus">Song saved! 🎵</div>
@@ -734,46 +736,75 @@ I wanted to tell you..."></textarea>
         // Music/Song functionality
         let isVinylSpinning = false;
 
-        function toggleVinylSpin() {
-            const vinyl = document.getElementById('vinyl');
-            isVinylSpinning = !isVinylSpinning;
-            
-            if (isVinylSpinning) {
-                vinyl.classList.add('spinning');
+        function saveSong() {
+    const song = {
+        title: document.getElementById('songTitle').value,
+        artist: document.getElementById('songArtist').value,
+        spotifyUrl: document.getElementById('spotifyUrl').value,
+        message: document.getElementById('songMessage').value
+    };
+
+    localStorage.setItem('valentineSong', JSON.stringify(song));
+
+    if (song.spotifyUrl) {
+        playSpotifySong(song.spotifyUrl);
+    }
+
+    document.getElementById('songStatus').classList.add('active');
+    setTimeout(() => {
+        document.getElementById('songStatus').classList.remove('active');
+        closeMusicModal();
+    }, 1500);
+}
+function playSpotifySong(url) {
+    let trackId = '';
+
+    if (url.includes('open.spotify.com/track/')) {
+        trackId = url.split('track/')[1].split('?')[0];
+    } else if (url.includes('spotify:track:')) {
+        trackId = url.split('spotify:track:')[1];
+    }
+
+    if (trackId) {
+        const embedUrl = `https://open.spotify.com/embed/track/${trackId}`;
+        document.getElementById('spotifyPlayer').src = embedUrl;
+        document.getElementById('spotifyPlayerContainer').style.display = 'block';
+    } else {
+        alert('Invalid Spotify URL');
+    }
+}
+function closeSpotifyPlayer() {
+    document.getElementById('spotifyPlayerContainer').style.display = 'none';
+    document.getElementById('spotifyPlayer').src = '';
+    document.getElementById('vinyl').classList.remove('spinning');
+    isVinylSpinning = false;
+}
+
+       function toggleVinylSpin() {
+    const vinyl = document.getElementById('vinyl');
+    const savedSong = localStorage.getItem('valentineSong');
+
+    isVinylSpinning = !isVinylSpinning;
+
+    if (isVinylSpinning) {
+        vinyl.classList.add('spinning');
+
+        if (savedSong) {
+            const song = JSON.parse(savedSong);
+            if (song.spotifyUrl) {
+                playSpotifySong(song.spotifyUrl);
             } else {
-                vinyl.classList.remove('spinning');
+                openMusicModal();
             }
-            
+        } else {
             openMusicModal();
         }
 
-        function openMusicModal() {
-            document.getElementById('musicModal').classList.add('active');
-            const savedSong = localStorage.getItem('valentineSong');
-            if (savedSong) {
-                const song = JSON.parse(savedSong);
-                document.getElementById('songTitle').value = song.title || '';
-                document.getElementById('songArtist').value = song.artist || '';
-                document.getElementById('songMessage').value = song.message || '';
-            }
-        }
-
-        function closeMusicModal() {
-            document.getElementById('musicModal').classList.remove('active');
-        }
-
-        function saveSong() {
-            const song = {
-                title: document.getElementById('songTitle').value,
-                artist: document.getElementById('songArtist').value,
-                message: document.getElementById('songMessage').value
-            };
-            localStorage.setItem('valentineSong', JSON.stringify(song));
-            document.getElementById('songStatus').classList.add('active');
-            setTimeout(() => {
-                document.getElementById('songStatus').classList.remove('active');
-            }, 3000);
-        }
+    } else {
+        vinyl.classList.remove('spinning');
+        closeSpotifyPlayer();
+    }
+}
 
         // Photo upload functionality
         let uploadedPhotos = JSON.parse(localStorage.getItem('valentinePhotos')) || [];
@@ -844,6 +875,28 @@ I wanted to tell you..."></textarea>
         });
     </script>
    
+<!-- Spotify Player -->
+<div id="spotifyPlayerContainer" 
+style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+z-index: 1000; display: none; width: 90%; max-width: 400px;
+box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+border-radius: 12px; overflow: hidden;">
+
+    <div style="background: #1db954; padding: 8px; text-align: center; 
+    color: white; font-family: 'Courier New', monospace; font-size: 12px;
+    display: flex; justify-content: space-between; align-items: center;">
+        <span>🎵 Now Playing</span>
+        <button onclick="closeSpotifyPlayer()" 
+        style="background:none;border:none;color:white;font-size:18px;cursor:pointer;">
+        ×
+        </button>
+    </div>
+
+    <iframe id="spotifyPlayer"
+    style="width:100%;height:152px;border:none;"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+    </iframe>
+</div>
 
 </body>
 </html>
