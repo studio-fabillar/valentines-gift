@@ -26,13 +26,13 @@
 
 .mobile-version {
   position: relative;
-  aspect-ratio: 350 / 595;
+  width: 100vw;
   height: 100dvh;
-  max-width: 100vw;
   background: #E7E0CF;
   overflow: hidden;
-  margin: auto;
-
+}
+.mobile-version {
+  transform-origin: top left;
 }
 
 /* Red side borders */
@@ -914,6 +914,22 @@ border-radius: 12px; overflow: hidden;">
     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
 </div>
+<script>
+function scaleLayout() {
+  const designWidth = 350;
+  const designHeight = 595;
+
+  const scaleX = window.innerWidth / designWidth;
+  const scaleY = window.innerHeight / designHeight;
+  const scale = Math.min(scaleX, scaleY);
+
+  const container = document.querySelector('.mobile-version');
+  container.style.transform = `scale(${scale})`;
+}
+
+window.addEventListener('resize', scaleLayout);
+window.addEventListener('load', scaleLayout);
+</script>
 
 </body>
 </html>
