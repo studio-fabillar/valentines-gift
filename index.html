@@ -36,7 +36,7 @@
             overflow: hidden;
         }
 
-        /* Red borders */
+        /* Red borders - FIXED: Ensure they stick to edges */
         .top-frame {
             position: absolute;
             width: 100%;
@@ -45,6 +45,7 @@
             left: 0;
             background: #8A0A09;
             z-index: 100;
+            pointer-events: none;
         }
 
         .bottom-frame {
@@ -55,6 +56,7 @@
             left: 0;
             background: #8A0A09;
             z-index: 100;
+            pointer-events: none;
         }
 
         .left-frame {
@@ -65,6 +67,18 @@
             top: 0;
             background: #8A0A09;
             z-index: 100;
+            pointer-events: none;
+        }
+
+        .right-frame {
+            position: absolute;
+            width: 6px;
+            height: 100%;
+            right: 0;
+            top: 0;
+            background: #8A0A09;
+            z-index: 100;
+            pointer-events: none;
         }
 
         .right-frame {
@@ -296,17 +310,22 @@
             object-fit: contain;
         }
 
+        /* FIXED: Photo slots now properly aligned and contained */
         .photo-slot {
             position: absolute;
             width: 90px;
             height: 60px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .photo-slot img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: center;
         }
 
         .photo-slot[data-slot="1"] { top: 18px; left: 55px; }
@@ -793,6 +812,7 @@ I wanted to tell you..."></textarea>
         // Global variables
         let audioMediaRecorder;
         let audioChunks = [];
+        let recordedAudioBlob; // FIXED: Store the blob separately
         let ticketStream;
         let ticketRecorder;
         let ticketChunks = [];
@@ -858,19 +878,30 @@ I wanted to tell you..."></textarea>
             document.getElementById('letterComplete').classList.remove('active');
         }
 
-        // Audio recording functionality
         function openCassetteModal() {
             document.getElementById('cassetteModal').classList.add('active');
             const savedAudio = localStorage.getItem('valentineAudio');
             if (savedAudio) {
                 document.getElementById('cassetteInput').style.display = 'none';
                 document.getElementById('cassetteComplete').classList.add('active');
-                document.getElementById('savedAudioPlayback').src = savedAudio;
+                // FIXED: Properly set the audio source
+                const savedPlayback = document.getElementById('savedAudioPlayback');
+                savedPlayback.src = savedAudio;
+                savedPlayback.load(); // Force reload
+            } else {
+                // Reset to input view
+                document.getElementById('cassetteInput').style.display = 'block';
+                document.getElementById('cassetteComplete').classList.remove('active');
+                document.getElementById('audioPlayback').style.display = 'none';
+                document.getElementById('playBtn').disabled = true;
             }
         }
 
         function closeCassetteModal() {
             document.getElementById('cassetteModal').classList.remove('active');
+            // Stop any playing audio
+            document.getElementById('audioPlayback').pause();
+            document.getElementById('savedAudioPlayback').pause();
         }
 
         async function startAudioRecording() {
@@ -884,24 +915,28 @@ I wanted to tell you..."></textarea>
                 };
 
                 audioMediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
+                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(recordedAudioBlob);
                     const audioPlayback = document.getElementById('audioPlayback');
                     audioPlayback.src = audioUrl;
                     audioPlayback.style.display = 'block';
+                    audioPlayback.load(); // FIXED: Force load the audio
                     document.getElementById('playBtn').disabled = false;
                     
+                    // Save to localStorage
                     const reader = new FileReader();
-                    reader.readAsDataURL(audioBlob);
+                    reader.readAsDataURL(recordedAudioBlob);
                     reader.onloadend = () => {
                         localStorage.setItem('valentineAudio', reader.result);
                         document.getElementById('cassetteBadge').classList.add('active');
                         
-                        // Show completion view
+                        // Show completion view after a short delay
                         setTimeout(() => {
                             document.getElementById('cassetteInput').style.display = 'none';
                             document.getElementById('cassetteComplete').classList.add('active');
-                            document.getElementById('savedAudioPlayback').src = reader.result;
+                            const savedPlayback = document.getElementById('savedAudioPlayback');
+                            savedPlayback.src = reader.result;
+                            savedPlayback.load(); // FIXED: Force load
                         }, 1000);
                     };
                 };
@@ -924,13 +959,19 @@ I wanted to tell you..."></textarea>
         }
 
         function playRecording() {
-            document.getElementById('audioPlayback').play();
+            const playback = document.getElementById('audioPlayback');
+            playback.play().catch(err => {
+                console.error('Playback failed:', err);
+                alert('Unable to play recording. Please try recording again.');
+            });
         }
 
         function rerecordAudio() {
             document.getElementById('cassetteInput').style.display = 'block';
             document.getElementById('cassetteComplete').classList.remove('active');
             document.getElementById('audioPlayback').style.display = 'none';
+            document.getElementById('audioPlayback').src = '';
+            document.getElementById('playBtn').disabled = true;
         }
 
         // Video recording functionality
@@ -940,8 +981,16 @@ I wanted to tell you..."></textarea>
             if (savedVideo) {
                 document.getElementById('ticketInput').style.display = 'none';
                 document.getElementById('ticketComplete').classList.add('active');
-                document.getElementById('savedVideoPlayback').src = savedVideo;
+                // FIXED: Properly set the video source
+                const savedPlayback = document.getElementById('savedVideoPlayback');
+                savedPlayback.src = savedVideo;
+                savedPlayback.load(); // Force reload
             } else {
+                // Reset to input view
+                document.getElementById('ticketInput').style.display = 'block';
+                document.getElementById('ticketComplete').classList.remove('active');
+                document.getElementById('ticketPlayback').style.display = 'none';
+                document.getElementById('saveVideoBtn').style.display = 'none';
                 startCamera();
             }
         }
@@ -949,6 +998,9 @@ I wanted to tell you..."></textarea>
         function closeTicketModal() {
             document.getElementById('ticketModal').classList.remove('active');
             stopCamera();
+            // Stop any playing video
+            document.getElementById('ticketPlayback').pause();
+            document.getElementById('savedVideoPlayback').pause();
         }
 
         async function startCamera() {
@@ -963,6 +1015,7 @@ I wanted to tell you..."></textarea>
         function stopCamera() {
             if (ticketStream) {
                 ticketStream.getTracks().forEach(track => track.stop());
+                document.getElementById('ticketCamera').srcObject = null;
             }
         }
 
@@ -977,6 +1030,7 @@ I wanted to tell you..."></textarea>
                 const playback = document.getElementById("ticketPlayback");
                 playback.src = URL.createObjectURL(savedVideoBlob);
                 playback.style.display = "block";
+                playback.load(); // FIXED: Force load the video
                 document.getElementById('saveVideoBtn').style.display = 'block';
             };
 
@@ -1001,7 +1055,11 @@ I wanted to tell you..."></textarea>
                 document.getElementById('ticketBadge').classList.add('active');
                 document.getElementById('ticketInput').style.display = 'none';
                 document.getElementById('ticketComplete').classList.add('active');
-                document.getElementById('savedVideoPlayback').src = reader.result;
+                // FIXED: Properly set the saved video source
+                const savedPlayback = document.getElementById('savedVideoPlayback');
+                savedPlayback.src = reader.result;
+                savedPlayback.load(); // Force reload
+                stopCamera();
             };
         }
 
@@ -1009,6 +1067,7 @@ I wanted to tell you..."></textarea>
             document.getElementById('ticketInput').style.display = 'block';
             document.getElementById('ticketComplete').classList.remove('active');
             document.getElementById('ticketPlayback').style.display = 'none';
+            document.getElementById('ticketPlayback').src = '';
             document.getElementById('saveVideoBtn').style.display = 'none';
             startCamera();
         }
@@ -1138,8 +1197,9 @@ I wanted to tell you..."></textarea>
                     uploadPreview.style.display = 'block';
                     uploadPreview.nextElementSibling.style.display = 'none';
                     
+                    // FIXED: Update the main photo slot on the strip
                     const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
-                    mainPreview.innerHTML = `<img src="${imageData}">`;
+                    mainPreview.innerHTML = `<img src="${imageData}" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">`;
                     
                     uploadedPhotos[index] = imageData;
                     localStorage.setItem('valentinePhotos', JSON.stringify(uploadedPhotos));
@@ -1192,7 +1252,7 @@ I wanted to tell you..."></textarea>
                 }
                 const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
                 if (mainPreview) {
-                    mainPreview.innerHTML = `<img src="${photo}">`;
+                    mainPreview.innerHTML = `<img src="${photo}" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">`;
                 }
             }
         });
@@ -1202,6 +1262,10 @@ I wanted to tell you..."></textarea>
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.remove('active');
+                    // Stop camera if ticket modal is closed
+                    if (modal.id === 'ticketModal') {
+                        stopCamera();
+                    }
                 }
             });
         });
