@@ -637,10 +637,10 @@
         <!-- Photo Strip -->
         <div class="photo-strip-container" onclick="openPhotoModal()">
             <img src="images/photo-strip.png" class="photo-strip-bg" alt="Photo Strip">
-            <div class="photo-slot" data-slot="1"></div>
-            <div class="photo-slot" data-slot="2"></div>
-            <div class="photo-slot" data-slot="3"></div>
-            <div class="photo-slot" data-slot="4"></div>
+            <img id="photo1" class="photo-slot" data-slot="1" style="display: none;">
+            <img id="photo2" class="photo-slot" data-slot="2" style="display: none;">
+            <img id="photo3" class="photo-slot" data-slot="3" style="display: none;">
+            <img id="photo4" class="photo-slot" data-slot="4" style="display: none;">
             <div class="completed-badge" id="photoBadge">✓</div>
         </div>
 
@@ -1197,9 +1197,10 @@ I wanted to tell you..."></textarea>
                     uploadPreview.style.display = 'block';
                     uploadPreview.nextElementSibling.style.display = 'none';
                     
-                    // FIXED: Update the main photo slot on the strip
-                    const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
-                    mainPreview.innerHTML = `<img src="${imageData}" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">`;
+                    // Update the main photo slot on the strip
+                    const mainPreview = document.getElementById(`photo${index + 1}`);
+                    mainPreview.src = imageData;
+                    mainPreview.style.display = 'block';
                     
                     uploadedPhotos[index] = imageData;
                     localStorage.setItem('valentinePhotos', JSON.stringify(uploadedPhotos));
@@ -1250,9 +1251,10 @@ I wanted to tell you..."></textarea>
                     uploadPreview.style.display = 'block';
                     uploadPreview.nextElementSibling.style.display = 'none';
                 }
-                const mainPreview = document.querySelector(`.photo-slot[data-slot="${index + 1}"]`);
+                const mainPreview = document.getElementById(`photo${index + 1}`);
                 if (mainPreview) {
-                    mainPreview.innerHTML = `<img src="${photo}" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">`;
+                    mainPreview.src = photo;
+                    mainPreview.style.display = 'block';
                 }
             }
         });
