@@ -311,21 +311,14 @@
         }
 
         /* FIXED: Photo slots now properly aligned and contained */
+        /* FIXED: Photo slots now properly aligned and contained */
         .photo-slot {
             position: absolute;
             width: 88px;
             height: 66px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .photo-slot img {
-            width: 100%;
-            height: 100%;
             object-fit: cover;
             object-position: center;
+            pointer-events: none;
         }
 
         .photo-slot[data-slot="1"] { top: 16px; left: 56px; }
