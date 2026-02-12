@@ -1003,74 +1003,42 @@ I wanted to tell you..."></textarea>
 }
 
 
-        function openPhotoModal() {
-            document.getElementById('photoModal').classList.add('active');
-            if (uploadedPhotos.filter(p => p).length > 0) showPhotoCompletion();
-            else {
-                document.getElementById('photoInput').style.display = 'block';
-                document.getElementById('photoComplete').classList.remove('active');
-            }
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photoModal').classList.remove('active');
-        }
-
-        function openPhotoModal() {
+       function openPhotoModal() {
     document.getElementById('photoModal').classList.add('active');
+
+    if (uploadedPhoto) {
+        document.getElementById('photoInput').style.display = 'none';
+        document.getElementById('photoComplete').classList.add('active');
+        document.getElementById('photoCount').textContent = 1;
+    } else {
+        document.getElementById('photoInput').style.display = 'block';
+        document.getElementById('photoComplete').classList.remove('active');
+    }
 }
-if (uploadedPhoto) {
-    document.getElementById('slot1').innerHTML = `<img src="${uploadedPhoto}">`;
-    document.getElementById('uploadPreview1').src = uploadedPhoto;
-    document.getElementById('uploadPreview1').style.display = 'block';
-    document.getElementById('placeholder1').style.display = 'none';
+
+function closePhotoModal() {
+    document.getElementById('photoModal').classList.remove('active');
 }
 
+function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-        function finishPhotos() {
-            if (uploadedPhotos.filter(p => p).length === 0) {
-                alert('Please upload at least one photo!');
-                return;
-            }
-            showPhotoCompletion();
-        }
+    const reader = new FileReader();
+    reader.onload = e => {
+        const img = e.target.result;
 
-        function showPhotoCompletion() {
-            const count = uploadedPhotos.filter(p => p).length;
-            document.getElementById('photoInput').style.display = 'none';
-            document.getElementById('photoComplete').classList.add('active');
-            document.getElementById('photoCount').textContent = count;
-            
-            const review = document.getElementById('photoReview');
-            review.innerHTML = '';
-            uploadedPhotos.forEach(photo => {
-                if (photo) {
-                    const div = document.createElement('div');
-                    div.style.cssText = 'border-radius: 4px; overflow: hidden;';
-                    div.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover;">`;
-                    review.appendChild(div);
-                }
-            });
-        }
+        document.getElementById('uploadPreview1').src = img;
+        document.getElementById('uploadPreview1').style.display = 'block';
+        document.getElementById('placeholder1').style.display = 'none';
 
-        function editPhotos() {
-            document.getElementById('photoInput').style.display = 'block';
-            document.getElementById('photoComplete').classList.remove('active');
-        }
+        document.getElementById('slot1').innerHTML = `<img src="${img}">`;
 
-        // Load saved photos
-        uploadedPhotos.forEach((photo, i) => {
-            if (photo) {
-                const preview = document.getElementById(`uploadPreview${i + 1}`);
-                if (preview) {
-                    preview.src = photo;
-                    preview.style.display = 'block';
-                    document.getElementById(`placeholder${i + 1}`).style.display = 'none';
-                }
-                const slot = document.getElementById(`slot${i + 1}`);
-                if (slot) slot.innerHTML = `<img src="${photo}">`;
-            }
-        });
+        uploadedPhoto = img;
+        localStorage.setItem('valentinePhoto', img);
+    };
+    reader.readAsDataURL(file);
+}
 
         // Close modals on outside click
         document.querySelectorAll('.modal').forEach(modal => {
