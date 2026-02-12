@@ -260,48 +260,42 @@
         }
 
         /* Photo Strip - FIXED positioning */
-        .photo-strip-container {
-            position: absolute;
-            width: 200px;
-            height: 287px;
-            left: 152px;
-            top: 219px;
-            transform: rotate(13.29deg);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 6;
-        }
+        /* Photo Strip – Single Photo */
+.photo-strip-container {
+    position: absolute;
+    width: 138px;
+    height: 147px;
+    left: 198px;
+    top: 335px;
+    background: url('images/Gemini_Generated_Image_vyx5nbvyx5nbvyx5-removebg-preview.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 6;
+}
 
-        .photo-strip-container:active {
-            transform: rotate(13.29deg) scale(0.95);
-        }
+.photo-strip-container:active {
+    transform: scale(0.95);
+}
 
-        .photo-strip-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+/* Single photo area */
+.photo-slot {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    top: 28px;   /* adjust if needed */
+    left: 24px;  /* adjust if needed */
+    overflow: hidden;
+}
 
-        /* FIXED: Photos now properly positioned inside black frames */
-        .photo-slot {
-            position: absolute;
-            width: 88px;
-            height: 66px;
-            overflow: hidden;
-            pointer-events: none;
-        }
+.photo-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        .photo-slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .photo-slot[data-slot="1"] { top: 16px; left: 56px; }
-        .photo-slot[data-slot="2"] { top: 87px; left: 56px; }
-        .photo-slot[data-slot="3"] { top: 158px; left: 56px; }
-        .photo-slot[data-slot="4"] { top: 229px; left: 56px; }
 
         /* Modal Styles - FIXED for mobile accessibility */
         .modal {
@@ -563,13 +557,10 @@
             </div>
         </div>
 
-        <div class="photo-strip-container" onclick="openPhotoModal()">
-            <img src="images/photo-strip.png" class="photo-strip-bg" alt="Photo Strip">
-            <div class="photo-slot" data-slot="1" id="slot1"></div>
-            <div class="photo-slot" data-slot="2" id="slot2"></div>
-            <div class="photo-slot" data-slot="3" id="slot3"></div>
-            <div class="photo-slot" data-slot="4" id="slot4"></div>
-        </div>
+       <div class="photo-strip-container" onclick="openPhotoModal()">
+    <div class="photo-slot" id="slot1"></div>
+</div>
+
 
         <div class="card">
             <img src="images/card.png" alt="Card">
@@ -664,28 +655,14 @@ I wanted to tell you..."></textarea>
             <div id="photoInput">
                 <h2>Our Memories</h2>
                 <p style="color: #666; margin-bottom: 15px; font-size: 13px;">Upload photos of your favorite moments together</p>
-                <div class="photo-upload-area">
-                    <div class="upload-slot" onclick="triggerPhotoUpload(0)">
-                        <input type="file" id="photoInput1" accept="image/*" onchange="handlePhotoUpload(event, 0)">
-                        <img id="uploadPreview1" style="display: none;">
-                        <span class="upload-placeholder" id="placeholder1">Click to upload</span>
-                    </div>
-                    <div class="upload-slot" onclick="triggerPhotoUpload(1)">
-                        <input type="file" id="photoInput2" accept="image/*" onchange="handlePhotoUpload(event, 1)">
-                        <img id="uploadPreview2" style="display: none;">
-                        <span class="upload-placeholder" id="placeholder2">Click to upload</span>
-                    </div>
-                    <div class="upload-slot" onclick="triggerPhotoUpload(2)">
-                        <input type="file" id="photoInput3" accept="image/*" onchange="handlePhotoUpload(event, 2)">
-                        <img id="uploadPreview3" style="display: none;">
-                        <span class="upload-placeholder" id="placeholder3">Click to upload</span>
-                    </div>
-                    <div class="upload-slot" onclick="triggerPhotoUpload(3)">
-                        <input type="file" id="photoInput4" accept="image/*" onchange="handlePhotoUpload(event, 3)">
-                        <img id="uploadPreview4" style="display: none;">
-                        <span class="upload-placeholder" id="placeholder4">Click to upload</span>
-                    </div>
-                </div>
+                <div class="photo-upload-area" style="grid-template-columns: 1fr;">
+    <div class="upload-slot" onclick="triggerPhotoUpload()">
+        <input type="file" id="photoInput1" accept="image/*" onchange="handlePhotoUpload(event)">
+        <img id="uploadPreview1" style="display: none;">
+        <span class="upload-placeholder" id="placeholder1">Click to upload</span>
+    </div>
+</div>
+
                 <button onclick="finishPhotos()">Done</button>
             </div>
 
@@ -738,7 +715,8 @@ I wanted to tell you..."></textarea>
         let audioMediaRecorder, audioChunks = [], recordedAudioBlob;
         let ticketStream, ticketRecorder, ticketChunks = [], savedVideoBlob;
         let isVinylSpinning = false;
-        let uploadedPhotos = JSON.parse(localStorage.getItem('valentinePhotos') || '[]');
+        let uploadedPhoto = localStorage.getItem('valentinePhoto') || null;
+
 
         // Letter functionality
         function openLetterModal() {
@@ -1020,9 +998,10 @@ I wanted to tell you..."></textarea>
         }
 
         // Photos
-        function triggerPhotoUpload(index) {
-            document.getElementById(`photoInput${index + 1}`).click();
-        }
+       function triggerPhotoUpload() {
+    document.getElementById('photoInput1').click();
+}
+
 
         function openPhotoModal() {
             document.getElementById('photoModal').classList.add('active');
@@ -1037,25 +1016,16 @@ I wanted to tell you..."></textarea>
             document.getElementById('photoModal').classList.remove('active');
         }
 
-        function handlePhotoUpload(event, index) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = e.target.result;
-                    document.getElementById(`uploadPreview${index + 1}`).src = img;
-                    document.getElementById(`uploadPreview${index + 1}`).style.display = 'block';
-                    document.getElementById(`placeholder${index + 1}`).style.display = 'none';
-                    
-                    const slot = document.getElementById(`slot${index + 1}`);
-                    slot.innerHTML = `<img src="${img}">`;
-                    
-                    uploadedPhotos[index] = img;
-                    localStorage.setItem('valentinePhotos', JSON.stringify(uploadedPhotos));
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+        function openPhotoModal() {
+    document.getElementById('photoModal').classList.add('active');
+}
+if (uploadedPhoto) {
+    document.getElementById('slot1').innerHTML = `<img src="${uploadedPhoto}">`;
+    document.getElementById('uploadPreview1').src = uploadedPhoto;
+    document.getElementById('uploadPreview1').style.display = 'block';
+    document.getElementById('placeholder1').style.display = 'none';
+}
+
 
         function finishPhotos() {
             if (uploadedPhotos.filter(p => p).length === 0) {
