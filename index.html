@@ -510,11 +510,68 @@
         }
 
         video {
-            width: 100%;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            max-height: 300px;
-        }
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-height: 200px;
+}
+
+/* Share View Styles */
+.share-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.share-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.share-item h4 {
+    color: #5a4a3a;
+    margin-bottom: 10px;
+    font-family: 'Playfair Display', serif;
+}
+
+.share-item video,
+.share-item audio {
+    max-height: 150px;
+}
+
+.share-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.share-photo-grid img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.share-btn {
+    background: #4CAF50;
+    padding: 12px 24px;
+    font-size: 16px;
+}
+
+.share-btn:hover {
+    background: #45a049;
+}
 
         /* Responsive scaling */
         @media (max-width: 400px) {
@@ -578,10 +635,9 @@
 </div>
 
 
-        <div class="card">
-            <img src="images/card.png" alt="Card">
-        </div>
-    </div>
+        <div class="card" onclick="openShareModal()">
+    <img src="images/card.png" alt="Card">
+</div>
 
     <!-- Letter Modal -->
     <div class="modal" id="letterModal">
@@ -715,6 +771,25 @@ I wanted to tell you..."></textarea>
                 <video id="savedVideoPlayback" controls></video>
                 <button onclick="rerecordVideo()">Record Again</button>
             </div>
+      </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeShareModal()">&times;</button>
+            
+            <div class="share-container">
+                <h2>💝 Your Valentine Package</h2>
+                <p style="color: #666; margin-bottom: 20px;">Share all your special messages with your loved one</p>
+                
+                <div id="shareContent"></div>
+                
+                <div class="share-buttons">
+                    <button class="share-btn" onclick="copyShareLink()">📋 Copy Link</button>
+                    <button class="share-btn" onclick="downloadPackage()">💾 Download All</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -733,8 +808,12 @@ I wanted to tell you..."></textarea>
         let isVinylSpinning = false;
         let uploadedPhoto = localStorage.getItem('valentinePhoto') || null;
 
+// Initialize photo on load
+if (uploadedPhoto) {
+    document.getElementById('slot1').innerHTML = `<img src="${uploadedPhoto}">`;
+}
 
-        // Letter functionality
+// Letter functionality
         function openLetterModal() {
             document.getElementById('letterModal').classList.add('active');
             const saved = localStorage.getItem('valentineLetter');
@@ -1056,7 +1135,148 @@ function handlePhotoUpload(event) {
     reader.readAsDataURL(file);
 }
 
-        // Close modals on outside click
+function editPhotos() {
+    document.getElementById('photoInput').style.display = 'block';
+    document.getElementById('photoComplete').classList.remove('active');
+}
+
+// Share functionality
+function openShareModal() {
+    document.getElementById('shareModal').classList.add('active');
+    generateShareContent();
+}
+
+function closeShareModal() {
+    document.getElementById('shareModal').classList.remove('active');
+}
+
+function generateShareContent() {
+    const shareContent = document.getElementById('shareContent');
+    let html = '';
+    let itemCount = 0;
+
+    // Letter
+    const letter = localStorage.getItem('valentineLetter');
+    if (letter) {
+        itemCount++;
+        html += `
+            <div class="share-item">
+                <h4>💌 Love Letter</h4>
+                <p style="font-style: italic; color: #666;">${letter.substring(0, 200)}${letter.length > 200 ? '...' : ''}</p>
+            </div>
+        `;
+    }
+
+    // Voice message
+    const audio = localStorage.getItem('valentineAudio');
+    if (audio) {
+        itemCount++;
+        html += `
+            <div class="share-item">
+                <h4>🎵 Voice Message</h4>
+                <audio controls src="${audio}"></audio>
+            </div>
+        `;
+    }
+
+    // Video message
+    const video = localStorage.getItem('valentineVideo');
+    if (video) {
+        itemCount++;
+        html += `
+            <div class="share-item">
+                <h4>🎬 Video Message</h4>
+                <video controls src="${video}"></video>
+            </div>
+        `;
+    }
+
+    // Song
+    const song = localStorage.getItem('valentineSong');
+    if (song) {
+        itemCount++;
+        const songData = JSON.parse(song);
+        html += `
+            <div class="share-item">
+                <h4>🎶 Our Song</h4>
+                <p><strong>${songData.title}</strong> by ${songData.artist}</p>
+                <p style="margin-top: 10px; font-style: italic; color: #666;">${songData.message}</p>
+            </div>
+        `;
+    }
+
+    // Photo
+    const photo = localStorage.getItem('valentinePhoto');
+    if (photo) {
+        itemCount++;
+        html += `
+            <div class="share-item">
+                <h4>📸 Our Memory</h4>
+                <div class="share-photo-grid">
+                    <img src="${photo}" alt="Memory">
+                </div>
+            </div>
+        `;
+    }
+
+    if (itemCount === 0) {
+        html = '<p style="color: #999; padding: 40px 20px;">No content saved yet. Start adding your messages!</p>';
+    }
+
+    shareContent.innerHTML = html;
+}
+
+function copyShareLink() {
+    const data = {
+        letter: localStorage.getItem('valentineLetter'),
+        audio: localStorage.getItem('valentineAudio'),
+        video: localStorage.getItem('valentineVideo'),
+        song: localStorage.getItem('valentineSong'),
+        photo: localStorage.getItem('valentinePhoto')
+    };
+
+    const shareText = `💝 I've created something special for you! Check out my Valentine's package with ${Object.values(data).filter(v => v).length} messages of love.`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Valentine Package',
+            text: shareText
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(shareText).then(() => {
+            alert('Share message copied to clipboard!');
+        }).catch(() => {
+            alert('Unable to copy. Please share manually.');
+        });
+    }
+}
+
+function downloadPackage() {
+    let content = '💝 MY VALENTINE PACKAGE 💝\n\n';
+    
+    const letter = localStorage.getItem('valentineLetter');
+    if (letter) {
+        content += '💌 LOVE LETTER:\n' + letter + '\n\n';
+    }
+
+    const song = localStorage.getItem('valentineSong');
+    if (song) {
+        const songData = JSON.parse(song);
+        content += `🎶 OUR SONG:\n${songData.title} by ${songData.artist}\n${songData.message}\n\n`;
+    }
+
+    content += '(Audio, video, and photos are saved in your browser)\n';
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'valentine-package.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Close modals on outside click
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', e => {
                 if (e.target === modal) {
