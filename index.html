@@ -753,16 +753,16 @@ I wanted to tell you..."></textarea>
         <div class="modal-content">
             <button class="modal-close" onclick="closeTicketModal()">&times;</button>
             
-            <div id="ticketInput">
-                <h2>Record a Video Message</h2>
-                <video id="ticketCamera" autoplay playsinline muted style="background: #000;"></video>
-                <div style="margin-top:10px;">
-                    <button id="startVideoBtn" onclick="startVideoRecording()">🎥 Start Recording</button>
-                    <button id="stopVideoBtn" onclick="stopVideoRecording()" disabled>⏹ Stop</button>
-                </div>
-                <video id="ticketPlayback" controls style="display:none; margin-top:10px;"></video>
-                <button id="saveVideoBtn" onclick="saveVideo()" style="display:none;">Save Video</button>
-            </div>
+          <div id="ticketInput">
+    <h2 style="font-size: 20px; margin-bottom: 15px;">Record a Video Message</h2>
+    <video id="ticketCamera" autoplay playsinline muted style="background: #000; max-height: 150px;"></video>
+    <div style="margin-top:10px;">
+        <button id="startVideoBtn" onclick="startVideoRecording()">🎥 Start Recording</button>
+        <button id="stopVideoBtn" onclick="stopVideoRecording()" disabled>⏹ Stop</button>
+    </div>
+    <video id="ticketPlayback" controls style="display:none; margin-top:10px; max-height: 150px;"></video>
+    <button id="saveVideoBtn" onclick="saveVideo()" style="display:none; margin-top: 10px;">Save Video</button>
+</div>
 
             <div class="completion-view" id="ticketComplete">
                 <div class="completion-icon">🎬</div>
