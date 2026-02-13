@@ -986,17 +986,20 @@ if (uploadedPhoto) {
         }
 
         function saveVideo() {
-            const reader = new FileReader();
-            reader.readAsDataURL(savedVideoBlob);
-            reader.onloadend = () => {
-                localStorage.setItem('valentineVideo', reader.result);
-                document.getElementById('ticketInput').style.display = 'none';
-                document.getElementById('ticketComplete').classList.add('active');
-                document.getElementById('savedVideoPlayback').src = reader.result;
-                stopCamera();
-            };
-        }
-
+    if (!savedVideoBlob) {
+        alert('No video recorded yet!');
+        return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(savedVideoBlob);
+    reader.onloadend = () => {
+        localStorage.setItem('valentineVideo', reader.result);
+        document.getElementById('ticketInput').style.display = 'none';
+        document.getElementById('ticketComplete').classList.add('active');
+        document.getElementById('savedVideoPlayback').src = reader.result;
+        stopCamera();
+    };
+}
         function rerecordVideo() {
             document.getElementById('ticketInput').style.display = 'block';
             document.getElementById('ticketComplete').classList.remove('active');
