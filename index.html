@@ -1238,22 +1238,31 @@ function copyShareLink() {
         photo: localStorage.getItem('valentinePhoto')
     };
 
-    const shareText = `💝 I've created something special for you! Check out my Valentine's package with ${Object.values(data).filter(v => v).length} messages of love.`;
+    // Encode data to base64 for URL
+    const encodedData = btoa(encodeURIComponent(JSON.stringify(data)));
+    const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedData}`;
+    
+    const shareText = `💝 I've created something special for you! Check out my Valentine's package:\n${shareUrl}`;
     
     if (navigator.share) {
         navigator.share({
             title: 'Valentine Package',
-            text: shareText
-        }).catch(() => {});
+            text: shareText,
+            url: shareUrl
+        }).catch(() => {
+            // Fallback to clipboard
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Link copied to clipboard! Share this link with your loved one.');
+            });
+        });
     } else {
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert('Share message copied to clipboard!');
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Link copied to clipboard! Share this link with your loved one.');
         }).catch(() => {
             alert('Unable to copy. Please share manually.');
         });
     }
 }
-
 function downloadPackage() {
     let content = '💝 MY VALENTINE PACKAGE 💝\n\n';
     
@@ -1288,6 +1297,35 @@ function downloadPackage() {
                 }
             });
         });
+        // Load shared data from URL on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('data');
+    
+    if (encodedData) {
+        try {
+            const decodedData = JSON.parse(decodeURIComponent(atob(encodedData)));
+            
+            // Load the shared data into localStorage
+            if (decodedData.letter) localStorage.setItem('valentineLetter', decodedData.letter);
+            if (decodedData.audio) localStorage.setItem('valentineAudio', decodedData.audio);
+            if (decodedData.video) localStorage.setItem('valentineVideo', decodedData.video);
+            if (decodedData.song) localStorage.setItem('valentineSong', decodedData.song);
+            if (decodedData.photo) {
+                localStorage.setItem('valentinePhoto', decodedData.photo);
+                uploadedPhoto = decodedData.photo;
+                document.getElementById('slot1').innerHTML = `<img src="${decodedData.photo}">`;
+            }
+            
+            // Show a welcome message
+            setTimeout(() => {
+                alert('💝 You have received a Valentine package! Click the card to view all messages.');
+            }, 500);
+        } catch (error) {
+            console.error('Error loading shared data:', error);
+        }
+    }
+});
     </script>
 </body>
 </html>
