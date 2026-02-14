@@ -761,7 +761,7 @@ I wanted to tell you..."></textarea>
         <button id="stopVideoBtn" onclick="stopVideoRecording()" disabled>⏹ Stop</button>
     </div>
     <video id="ticketPlayback" controls style="display:none; margin-top:10px; max-height: 100px;"></video>
-    <button id="saveVideoBtn" onclick="saveVideo()" style="display:none; margin-top: 10px;">Save Video</button>
+  <button id="saveVideoBtn" onclick="saveVideo()" style="display:none; margin-top: 10px;">Save Video</button>
 </div>
 
             <div class="completion-view" id="ticketComplete">
@@ -965,12 +965,18 @@ if (uploadedPhoto) {
 
             ticketRecorder.ondataavailable = e => ticketChunks.push(e.data);
             ticketRecorder.onstop = () => {
-                savedVideoBlob = new Blob(ticketChunks, { type: "video/webm" });
-                const url = URL.createObjectURL(savedVideoBlob);
-                document.getElementById('ticketPlayback').src = url;
-                document.getElementById('ticketPlayback').style.display = 'block';
-                document.getElementById('saveVideoBtn').style.display = 'inline-block';
-            };
+    savedVideoBlob = new Blob(ticketChunks, { type: "video/webm" });
+    const url = URL.createObjectURL(savedVideoBlob);
+    const playback = document.getElementById('ticketPlayback');
+    const saveBtn = document.getElementById('saveVideoBtn');
+    
+    playback.src = url;
+    playback.style.display = 'block';
+    saveBtn.style.display = 'block';
+    saveBtn.disabled = false;
+    
+    console.log('Video recorded successfully, blob size:', savedVideoBlob.size);
+};
 
             ticketRecorder.start();
             document.getElementById('startVideoBtn').disabled = true;
